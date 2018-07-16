@@ -5,6 +5,7 @@ import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 public class Sample {
   private static final Logger LOG = LoggerFactory.getLogger(Sample.class);
@@ -16,6 +17,10 @@ public class Sample {
     directoryNavigationExampleExpand();
     directoryNavigationExampleExpandDeep();
     directoryNavigationExampleExpandDeepMaxTwoLevels();
+    errorHandlerWithFallbackResume();
+    errorHandlerWithFallbackReturn();
+    errorHandlerWithMap();
+    errorWhenCallbackIsNotImplemented();
   }
 
   private static void directoryNavigationExampleExpand() {
@@ -42,9 +47,9 @@ public class Sample {
         .map(FileNode::new)
         .expandDeep(
             fileNode ->
-                Flux.fromArray(fileNode.file.listFiles())
-                    .filter(innerFile -> innerFile.isDirectory() && fileNode.deepLevel < 2)
-                    .map(file -> new FileNode(file, fileNode.deepLevel + 1)))
+                Flux.fromArray(fileNode.getFile().listFiles())
+                    .filter(innerFile -> innerFile.isDirectory() && fileNode.getDeepLevel() < 2)
+                    .map(file -> new FileNode(file, fileNode.getDeepLevel() + 1)))
         .subscribe(result -> LOG.debug(result.toString()));
   }
 
@@ -65,22 +70,51 @@ public class Sample {
         .subscribe(result -> LOG.debug("Multiply by 3: {}", result));
   }
 
-  private static class FileNode {
-    private final File file;
-    private final int deepLevel;
+  private static void errorHandlerWithFallbackResume() {
+    LOG.info("ErrorHandlerWithFallbackResume");
+    Mono.just("error")
+        .flatMap(
+            str -> {
+              throw new IllegalArgumentException();
+            })
+        .onErrorResume(IllegalArgumentException.class, throwable -> Mono.just("success"))
+        .subscribe(result -> LOG.debug("ErrorHandlerWithFallbackResume: {}", result));
+  }
 
-    public FileNode(File file) {
-      this.file = file;
-      this.deepLevel = 0;
-    }
+  private static void errorHandlerWithFallbackReturn() {
+    LOG.info("ErrorHandlerWithFallbackReturn");
+    Mono.just("error")
+        .flatMap(
+            str -> {
+              throw new IllegalArgumentException();
+            })
+        .onErrorReturn(IllegalArgumentException.class, "success")
+        .subscribe(result -> LOG.debug("ErrorHandlerWithFallbackReturn: {}", result));
+  }
 
-    public FileNode(File file, int deepLevel) {
-      this.file = file;
-      this.deepLevel = deepLevel;
-    }
+  private static void errorHandlerWithMap() {
+    LOG.info("ErrorHandlerWithMap");
+    Mono.just("error")
+        .flatMap(
+            str -> {
+              throw new NullPointerException();
+            })
+        .onErrorMap(NullPointerException.class, throwable -> new IllegalAccessException())
+        .subscribe(result -> LOG.debug("ErrorHandlerWithMap: {}", result));
+  }
 
-    public String toString() {
-      return String.format("%s (%d)", file.toString(), deepLevel);
-    }
+  private static void errorWhenCallbackIsNotImplemented() {
+    LOG.info("ErrorWhenCallbackIsNotImplemented");
+    Mono.just("error")
+        .flatMap(
+            str -> {
+              throw new NullPointerException();
+            })
+        .flatMap(
+            str -> {
+              throw new IllegalArgumentException();
+            })
+        .onErrorMap(NullPointerException.class, throwable -> new IllegalAccessException())
+        .subscribe(result -> LOG.debug("ErrorWhenCallbackIsNotImplemented: {}", result));
   }
 }
