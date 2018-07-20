@@ -1,4 +1,4 @@
-package com.netshoes.sample.reactor;
+package com.netshoes.sample.reactor.simple;
 
 import java.io.File;
 import java.util.Arrays;
