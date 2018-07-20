@@ -7,8 +7,8 @@ import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 import reactor.util.Loggers;
 
-public class Samples {
-  private static final Logger LOG = Loggers.getLogger(Samples.class);
+public class Main {
+  private static final Logger LOG = Loggers.getLogger(Main.class);
   private static final String RESOURCES_PATH = "src/main/resources";
 
   public static void main(String... args) {

@@ -1,4 +1,4 @@
-package com.netshoes.sample.reactor;
+package reactor;
 
 import java.time.Duration;
 import org.reactivestreams.Publisher;
@@ -14,11 +14,11 @@ import reactor.util.function.Tuples;
 
 public class DiscoverPrimeNumbers {
   private static final Logger LOG = Loggers.getLogger(DiscoverPrimeNumbers.class);
-  private static final Scheduler schedulerForCalc = Schedulers.newParallel("calc", 3, true);
+  private static final Scheduler schedulerForCalc = Schedulers.newParallel("calc", 4, true);
   private static final Scheduler schedulerForVerify = Schedulers.newParallel("verify", 2, true);
 
   public static void main(String... args) {
-    discoverPrimeNumbers(1000000);
+    discoverPrimeNumbers(100000);
   }
 
   private static void discoverPrimeNumbers(int maxNumber) {
