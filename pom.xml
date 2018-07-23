@@ -19,7 +19,7 @@
   <modules>
     <module>simple-samples</module>
     <module>prime-numbers</module>
-    <module>spring-boot-prime-numbers</module>
+    <module>prime-numbers-webflux</module>
   </modules>
 
   <properties>
