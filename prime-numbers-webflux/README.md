@@ -1,21 +1,21 @@
 # Discover prime numbers - Spring WebFlux example
 ## Start the process
 ```
-curl -X POST http://localhost:8080/start/{lastNumber}
+curl -v -X POST http://localhost:8080/start/{qty}
 ```
-lastNumber: The last number who will be tested
+qty: Quantity of prime numbers to discover
 
 ## Stop the process
 ```
-curl -X POST http://localhost:8080/stop
+curl -v -X POST http://localhost:8080/stop
 ```
 
 ## Verify if process is running
 ```
-curl http://localhost:8080/isRunning
+curl -v http://localhost:8080/isRunning
 ```
 
 ## Listen the process
 ```
-curl http://localhost:8080/listen --header content-type=application/stream+json;charset=UTF-8
+curl -v http://localhost:8080/listen --header content-type=application/stream+json
 ```

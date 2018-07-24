@@ -9,15 +9,11 @@ public class Main {
   private static final Logger LOG = Loggers.getLogger(Main.class);
 
   public static void main(String... args) {
-    discoverPrimeNumbers(100000);
-  }
-
-  private static void discoverPrimeNumbers(int maxNumber) {
     final DiscoverPrimeNumbers discover = new DiscoverPrimeNumbers();
 
     final Disposable disposable =
         discover
-            .execute(maxNumber)
+            .execute(100000)
             .buffer(Duration.ofMillis(100))
             .subscribe(primeNumber -> LOG.info("New prime numbers found: {}", primeNumber));
 

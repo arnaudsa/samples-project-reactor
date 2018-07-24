@@ -15,11 +15,12 @@ public class DiscoverPrimeNumbers {
   private static final Scheduler schedulerForVerify = Schedulers.newParallel("verify", 2, true);
   private final Logger log = Loggers.getLogger(DiscoverPrimeNumbers.class);
 
-  public Flux<Integer> execute(int maxNumber) {
-    return Flux.range(1, maxNumber)
+  public Flux<Integer> execute(int qty) {
+    return Flux.range(1, Integer.MAX_VALUE)
         .flatMap(this::calculateQtyDividers)
         .publishOn(schedulerForVerify)
         .filter(this::hasUniqueDivisor)
+        .take(qty)
         .map(Tuple2::getT1)
         .map(this::logPrimeNumber);
   }

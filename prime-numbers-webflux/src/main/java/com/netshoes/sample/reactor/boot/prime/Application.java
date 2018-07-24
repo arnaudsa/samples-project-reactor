@@ -53,15 +53,15 @@ public class Application {
     private final Scheduler discoverPrimeNumbersScheduler;
     private Disposable process;
 
-    @PostMapping(value = "start/{lastNumber}")
-    public ResponseEntity<Void> start(@PathVariable @NotNull Integer lastNumber) {
+    @PostMapping(value = "start/{qty}")
+    public ResponseEntity<Void> start(@PathVariable @NotNull Integer qty) {
       if (isRunning()) {
         return new ResponseEntity(HttpStatus.CONFLICT);
       }
 
       process =
           discoverPrimeNumbers
-              .execute(lastNumber)
+              .execute(qty)
               .buffer(Duration.ofMillis(1000))
               .publishOn(discoverPrimeNumbersScheduler)
               .subscribe(
